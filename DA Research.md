@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 import scipy.stats as stats
+import re
 ```
 
 
@@ -56,7 +57,7 @@ passengers_df.head(3)
       <td>3</td>
       <td>Braund, Mr. Owen Harris</td>
       <td>male</td>
-      <td>22.0</td>
+      <td>22</td>
       <td>1</td>
       <td>0</td>
       <td>A/5 21171</td>
@@ -71,7 +72,7 @@ passengers_df.head(3)
       <td>1</td>
       <td>Cumings, Mrs. John Bradley (Florence Briggs Th...</td>
       <td>female</td>
-      <td>38.0</td>
+      <td>38</td>
       <td>1</td>
       <td>0</td>
       <td>PC 17599</td>
@@ -86,7 +87,7 @@ passengers_df.head(3)
       <td>3</td>
       <td>Heikkinen, Miss. Laina</td>
       <td>female</td>
-      <td>26.0</td>
+      <td>26</td>
       <td>0</td>
       <td>0</td>
       <td>STON/O2. 3101282</td>
@@ -167,7 +168,7 @@ print "Average probability of survival: {}".format(round(survival_mean, 2))
 
     Survived 342 out of 891
     Average probability of survival: 0.38
-    
+
 
 ### Survivability by age
 
@@ -203,7 +204,7 @@ sns.violinplot(x=df_with_ages['Age'], cut=0)
 
 
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x9552710>
+    <matplotlib.axes._subplots.AxesSubplot at 0x117065d90>
 
 
 
@@ -220,7 +221,7 @@ sns.boxplot(x=df_with_ages['Age'])
 
 
 
-    <matplotlib.axes._subplots.AxesSubplot at 0x93e6630>
+    <matplotlib.axes._subplots.AxesSubplot at 0x119838850>
 
 
 
@@ -428,7 +429,7 @@ ttest(get_adults_by_gender('female')['Survived'], get_adults_by_gender('male')['
     The result is statistically significant
     We reject the null hypothesis.
     CI(99.0%) = (0.51, 0.68)
-    
+
 
 
 ```python
@@ -452,15 +453,15 @@ plt.pie(passengers_df.groupby('Pclass')['PassengerId'].count().values, labels=la
 
 
 
-    ([<matplotlib.patches.Wedge at 0xa6e8b00>,
-      <matplotlib.patches.Wedge at 0x9605d68>,
-      <matplotlib.patches.Wedge at 0xa14c4a8>],
-     [<matplotlib.text.Text at 0xaa04f60>,
-      <matplotlib.text.Text at 0xa705f98>,
-      <matplotlib.text.Text at 0xa636240>],
-     [<matplotlib.text.Text at 0xa6fca58>,
-      <matplotlib.text.Text at 0xa705470>,
-      <matplotlib.text.Text at 0xa6364e0>])
+    ([<matplotlib.patches.Wedge at 0x11a4d3b50>,
+      <matplotlib.patches.Wedge at 0x11a4e0f10>,
+      <matplotlib.patches.Wedge at 0x11a662250>],
+     [<matplotlib.text.Text at 0x11a4e0610>,
+      <matplotlib.text.Text at 0x11a4ec990>,
+      <matplotlib.text.Text at 0x11a662c90>],
+     [<matplotlib.text.Text at 0x11a4e0ad0>,
+      <matplotlib.text.Text at 0x11a4ecdd0>,
+      <matplotlib.text.Text at 0x11a66f110>])
 
 
 
@@ -524,7 +525,7 @@ sns.barplot(x="Sex", y="Survived", hue="Pclass", data=df_with_ages)
 
 
 
-    <matplotlib.axes._subplots.AxesSubplot at 0xa6dc198>
+    <matplotlib.axes._subplots.AxesSubplot at 0x11a21f190>
 
 
 
@@ -566,17 +567,17 @@ df_with_ages[df_with_ages['Age'] < 18].groupby('Pclass')[['Survived']].describe(
   <tbody>
     <tr>
       <th>1</th>
-      <td>12.0</td>
+      <td>12</td>
       <td>0.916667</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>23.0</td>
+      <td>23</td>
       <td>0.913043</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>78.0</td>
+      <td>78</td>
       <td>0.371795</td>
     </tr>
   </tbody>
@@ -596,18 +597,13 @@ sns.barplot(x="Pclass", y="Survived", data=df_with_ages[df_with_ages['Age'] < 18
 
 
 
-    <matplotlib.axes._subplots.AxesSubplot at 0xa8f32b0>
+    <matplotlib.axes._subplots.AxesSubplot at 0x119f77f10>
 
 
 
 
 ![png](output_50_1.png)
 
-
-
-```python
-
-```
 
 ### Here we'll test if the chance of surviving between those who have relatives and those who don't is statistically significant at α = 0.01
 
@@ -617,7 +613,7 @@ print u'H\u2080: \u039Chr = \u039cnhr          H\u2081: \u039Chr \u2260 \u039cnh
 ```
 
     H₀: Μhr = Μnhr          H₁: Μhr ≠ Μnhr          α = .01
-    
+
 
 
 ```python
@@ -647,7 +643,7 @@ print not_having_relatives.describe()
     75%        1.000000
     max        1.000000
     Name: Survived, dtype: float64
-    
+
 
 
 ```python
@@ -662,7 +658,7 @@ ttest(having_relatives, not_having_relatives, 2.581, 0.01)
     The result is statistically significant
     We reject the null hypothesis.
     CI(99.0%) = (0.12, 0.29)
-    
+
 
 ** The two-tailed P value is less than 0.0001 **  
 ** By conventional criteria, this difference is considered to be extremely statistically significant. **  
@@ -684,21 +680,6 @@ t, p = stats.ttest_ind(having_relatives, not_having_relatives)
     't-statistic: 6.19303248808, p-value: 9.00949017933e-10'
 
 
-
-
-```python
-ttest(having_relatives, not_having_relatives, 2.581, 0.01)
-```
-
-    α = 0.01
-    Degree of freedom: 889
-    t-statistic: 6.19
-    t-critical: 2.581
-    p-value: 9.00949017933e-10
-    The result is statistically significant
-    We reject the null hypothesis.
-    CI(99.0%) = (0.12, 0.29)
-    
 
 ### Examine distribution of people on embarkment
 
@@ -774,7 +755,7 @@ display_embarked_by_pclass(passengers_df)
 ```
 
 
-![png](output_64_0.png)
+![png](output_62_0.png)
 
 
 
@@ -784,7 +765,7 @@ display_embarked_by_pclass(passengers_df[passengers_df['Survived'] == 1])
 ```
 
 
-![png](output_65_0.png)
+![png](output_63_0.png)
 
 
 
@@ -794,10 +775,12 @@ display_embarked_by_pclass(passengers_df[passengers_df['Survived'] != 1])
 ```
 
 
-![png](output_66_0.png)
+![png](output_64_0.png)
 
 
 We can see from the above graphics that most bodies Embarked in Southampton
+
+### Conclusions
 
 ##### From the results we can conclude that you best bet of surviving is to be a middle age woman with higher or middle socio-economic status not travelling alone. And the lowest chance is youn man from lower class travelling alone.
 
@@ -842,10 +825,27 @@ ttest(w_sample['Survived'], m_sample['Survived'], 2.626, 0.01)
     The result is statistically significant
     We reject the null hypothesis.
     CI(99.0%) = (0.69, 0.97)
-    
+
 
 #### *Overall we are 99% confident that the w group has between 69% and 97% higher chance of surviving than m group*
+
+This study was concentrated on calculating the survivability from shipwrecks and its realtion with different factors like age, gender and social status. However there were some limitations. For example about 20% of the age data was missing. While the size of the data was good enough there are a lot of lurking variables when talking about shipwrecks like weather, timeof the day, location. The year of when it happened also affects it since cruisers of this type nowadays are supposed to be a lot better and thanks to the communications can be reacted a lot faster. Another issue is that the data is from a single shipwreck. Every shipwreck has an unique story and having multiple samples from different events would make the research a lot more conclusive. But if we had those records we could go into other directions like comparing decades, locations, etc. - all those lurking variables.
+In regards with the data available it would have been great if we had the relatives connections. Then we could have sampled the families and tackle on other topics like family survivability. Another interesting thing if we had the cabin data would be to build heat map for the fare price on the ship.
+
+Apart from those limitations the data was good enough to draw several hypothesis which might be further established with research on other shipwrecks:
+Women are 51 to 68% more likely to survive than men.
+You'll probably have between 12 and 29 higher chance if not travelling alone.
+Being from a higher class would also increase your chances (0.63 vs. 0.24 average survivability for Pclass 1 vs. Pclass 3) 
+
+If you're middle aged high class woman go ahead, if you're young lower class man - think again!
+
+P.S. Almost 5% of people were named William :)
 
 Sources:
   1. [Titanic passengers' data and description](https://www.kaggle.com/c/titanic/data)
   2. [T table](https://s3.amazonaws.com/udacity-hosted-downloads/t-table.jpg)
+
+
+```python
+
+```
